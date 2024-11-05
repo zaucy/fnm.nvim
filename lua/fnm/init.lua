@@ -1,4 +1,5 @@
 local last_dir = nil
+local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 
 local M = {}
 
@@ -12,6 +13,10 @@ local function update_env_from_fnm_json(output)
 	for name, value in pairs(env_data) do
 		vim.env[name] = value
 	end
+
+	local path_separator = is_windows and ";" or ":"
+	local node_bin_path = is_windows and env_data.FNM_MULTISHELL_PATH or (env_data.FNM_MULTISHELL_PATH .. "/bin")
+	vim.env.PATH = node_bin_path .. path_separator .. vim.env.PATH
 end
 
 local function spawn_fnm()
